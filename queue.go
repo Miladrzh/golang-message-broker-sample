@@ -1,5 +1,7 @@
 package main
 
+import "math/rand"
+
 type Message struct {
 	sender  string
 	content interface{}
@@ -7,15 +9,21 @@ type Message struct {
 
 // MessageQueue declaration and methods
 type MessageQueue struct {
-	channel chan Message
+	channels map[int]chan Message
 }
 
-func (mQueue MessageQueue) send(message Message) {
-	mQueue.channel <- message
+func (mQueue MessageQueue) makeChannel() (int) {
+	key := rand.Intn(1000000)
+	mQueue.channels[key] = make(chan Message, 10)
+	return key
 }
 
-func (mQueue MessageQueue) receive() (chan Message) {
-	return mQueue.channel
+func (mQueue MessageQueue) send(message Message, key int) {
+	mQueue.channels[key] <- message
+}
+
+func (mQueue MessageQueue) receive(key int) (chan Message) {
+	return mQueue.channels[key]
 }
 
 // end of MessageQueue
