@@ -8,6 +8,7 @@ import (
 // Subscriber declaration and methods
 type Subscriber struct {
 	queue      MessageQueue
+	queueName string
 	receiveKey int
 }
 
@@ -15,7 +16,7 @@ func (subscriber Subscriber) listen() {
 	for {
 		select {
 		case message := <-subscriber.queue.receive(subscriber.receiveKey):
-			fmt.Printf("\n\nreceived %v from %v at time %v", message.content, message.sender, time.Now())
+			fmt.Printf("\n\nreceived %v from queue %v at time %v", message.content, subscriber.queueName, time.Now())
 		default:
 			time.Sleep(1000000000)
 		}

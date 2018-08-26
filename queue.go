@@ -12,14 +12,16 @@ type MessageQueue struct {
 	channels map[int]chan Message
 }
 
-func (mQueue MessageQueue) makeChannel() (int) {
+func (mQueue MessageQueue) registerSubscriber() (int) {
 	key := rand.Intn(1000000)
 	mQueue.channels[key] = make(chan Message, 10)
 	return key
 }
 
-func (mQueue MessageQueue) send(message Message, key int) {
-	mQueue.channels[key] <- message
+func (mQueue MessageQueue) send(message Message) {
+	for key := range mQueue.channels {
+		mQueue.channels[key] <- message
+	}
 }
 
 func (mQueue MessageQueue) receive(key int) (chan Message) {
