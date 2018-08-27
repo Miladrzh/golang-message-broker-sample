@@ -32,27 +32,22 @@ func (mQueue MessageQueue) receive(key int) (chan Message) {
 func (mQueue MessageQueue) listenToPublisher(conn *websocket.Conn, queueName string) {
 	for {
 		message := Message{}
-		conn.ReadJSON(&message)
-		conn.WriteJSON(message)
-		fmt.Println(message)
+		err := conn.ReadJSON(&message)
+		if err != nil {
+			return
+		}
 		go mQueue.send(message)
 	}
 }
 
 func (mQueue MessageQueue) listenToSubscriber(conn *websocket.Conn, queueName string) {
 	subscriberChannelId := mQueue.registerSubscriber()
-	fmt.Println(subscriberChannelId)
 	for {
-		select {
-		case message := <-mQueue.receive(subscriberChannelId):
-			message.Time = time.Now().String()
-			fmt.Println(message)
-			conn.WriteJSON(message)
-		default:
-			time.Sleep(1000 * time.Millisecond)
-		}
+		message := <-mQueue.receive(subscriberChannelId)
+		message.Time = time.Now().String()
+		fmt.Println(message)
+		conn.WriteJSON(message)
 	}
-	fmt.Println(subscriberChannelId)
 }
 
 // end of MessageQueue

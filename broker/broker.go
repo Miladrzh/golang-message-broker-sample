@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gorilla/websocket"
 	"net/http"
 	"strings"
@@ -12,7 +11,7 @@ type MessageBroker struct {
 }
 
 type Message struct {
-	Message string `json:"message"`
+	Content string `json:"message"`
 	Time    string `json:"time"`
 }
 
@@ -33,7 +32,6 @@ func (broker MessageBroker) handleRequest(w http.ResponseWriter, r *http.Request
 	mQueue := broker.getMessageQueue(queueName)
 
 	if r.URL.Path[:9] == "/publish/" {
-		fmt.Println("sdfadfe3")
 		go mQueue.listenToPublisher(conn, queueName)
 	} else if r.URL.Path[:11] == "/subscribe/" {
 		go mQueue.listenToSubscriber(conn, queueName)
