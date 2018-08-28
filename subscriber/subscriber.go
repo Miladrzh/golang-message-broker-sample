@@ -7,8 +7,8 @@ import (
 
 func main() {
 	var queueName string
-	fmt.Println("Enter queue name:")
-	fmt.Scan(&queueName)
+	fmt.Println("subscriber connecting to sample queue")
+	queueName = "sample_queue"
 
 	ws := client.GetWebSocketFromURL("ws", "broker:8000", "/subscribe/"+queueName)
 

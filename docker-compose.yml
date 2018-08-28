@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  broker:
+    build:
+      dockerfile: Dockerfiles/broker/Dockerfile
+      context: .
+  publisher:
+    build:
+      dockerfile: Dockerfiles/publisher/Dockerfile
+      context: .
+    depends_on:
+      - broker
+      - subscriber
+  subscriber:
+    depends_on:
+      - broker
+    build:
+      dockerfile: Dockerfiles/subscriber/Dockerfile
+      context: .

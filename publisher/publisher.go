@@ -7,18 +7,15 @@ import (
 
 func main() {
 	var queueName string
-	fmt.Println("Enter queue name:")
-	fmt.Scan(&queueName)
+	fmt.Println("publisher connecting to sample queue")
+	queueName = "sample_queue"
 
 	ws := client.GetWebSocketFromURL("ws", "broker:8000", "/publish/"+queueName)
 
 	for {
 		var content string
-		fmt.Println("Enter message (type ! for exit)")
-		fmt.Scan(&content)
-		if content == "!" {
-			return
-		}
+		fmt.Println("publisher send sample message")
+		content = "sample message"
 		message := client.Message{}
 		message.Content = content
 		ws.WriteJSON(message)
