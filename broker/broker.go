@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gorilla/websocket"
 	"net/http"
 	"strings"
@@ -18,7 +19,7 @@ type Message struct {
 func (broker MessageBroker) listen() {
 	http.HandleFunc("/publish/", broker.handleRequest)
 	http.HandleFunc("/subscribe/", broker.handleRequest)
-	panic(http.ListenAndServe(":8000", nil))
+	panic(http.ListenAndServe("0.0.0.0:8000", nil))
 }
 
 func (broker MessageBroker) handleRequest(w http.ResponseWriter, r *http.Request) {
@@ -48,6 +49,7 @@ func (broker MessageBroker) getMessageQueue(queueName string) (MessageQueue) {
 }
 
 func main() {
+	fmt.Printf("--Starting Broker--")
 	broker := MessageBroker{make(map[string]MessageQueue)}
 	broker.listen()
 }
